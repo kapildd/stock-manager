@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="StockManagerModelStoreContainer" CdmEntityContainer="StockManagerEntities">
+    <EntitySetMapping Name="Alerts">
+      <EntityTypeMapping TypeName="StockManagerModel.Alert">
+        <MappingFragment StoreEntitySet="Alerts">
+          <ScalarProperty Name="alertID" ColumnName="alertID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="pending" ColumnName="pending" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Companies">
+      <EntityTypeMapping TypeName="StockManagerModel.Company">
+        <MappingFragment StoreEntitySet="Company">
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Scrip" ColumnName="Scrip" />
+          <ScalarProperty Name="ExchangeName" ColumnName="ExchangeName" />
+          <ScalarProperty Name="Sector" ColumnName="Sector" />
+          <ScalarProperty Name="URL" ColumnName="URL" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LoginInfoes">
+      <EntityTypeMapping TypeName="StockManagerModel.LoginInfo">
+        <MappingFragment StoreEntitySet="LoginInfo">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Portfolios">
+      <EntityTypeMapping TypeName="StockManagerModel.Portfolio">
+        <MappingFragment StoreEntitySet="Portfolio">
+          <ScalarProperty Name="PID" ColumnName="PID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PortfolioDatas">
+      <EntityTypeMapping TypeName="StockManagerModel.PortfolioData">
+        <MappingFragment StoreEntitySet="PortfolioData">
+          <ScalarProperty Name="PID" ColumnName="PID" />
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="CurrentHolding" ColumnName="CurrentHolding" />
+          <ScalarProperty Name="RealizedProfitLoss" ColumnName="RealizedProfitLoss" />
+          <ScalarProperty Name="UnrealizedProfitLoss" ColumnName="UnrealizedProfitLoss" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PriceAlerts">
+      <EntityTypeMapping TypeName="StockManagerModel.PriceAlert">
+        <MappingFragment StoreEntitySet="PriceAlerts">
+          <ScalarProperty Name="alertID" ColumnName="alertID" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="tolerance" ColumnName="tolerance" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ScripMappers">
+      <EntityTypeMapping TypeName="StockManagerModel.ScripMapper">
+        <MappingFragment StoreEntitySet="ScripMapper">
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+          <ScalarProperty Name="ScripCode" ColumnName="ScripCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SourceInfoes">
+      <EntityTypeMapping TypeName="StockManagerModel.SourceInfo">
+        <MappingFragment StoreEntitySet="SourceInfo">
+          <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+          <ScalarProperty Name="SourceName" ColumnName="SourceName" />
+          <ScalarProperty Name="Link" ColumnName="Link" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockDatas">
+      <EntityTypeMapping TypeName="StockManagerModel.StockData">
+        <MappingFragment StoreEntitySet="StockData">
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="LTP" ColumnName="LTP" />
+          <ScalarProperty Name="LTPTime" ColumnName="LTPTime" />
+          <ScalarProperty Name="Change" ColumnName="Change" />
+          <ScalarProperty Name="PercChange" ColumnName="PercChange" />
+          <ScalarProperty Name="DayOpen" ColumnName="DayOpen" />
+          <ScalarProperty Name="PrevClose" ColumnName="PrevClose" />
+          <ScalarProperty Name="DayHigh" ColumnName="DayHigh" />
+          <ScalarProperty Name="DayLow" ColumnName="DayLow" />
+          <ScalarProperty Name="Week52High" ColumnName="Week52High" />
+          <ScalarProperty Name="Week52Low" ColumnName="Week52Low" />
+          <ScalarProperty Name="Volume" ColumnName="Volume" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="StockManagerModel.sysdiagram">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TimeAlerts">
+      <EntityTypeMapping TypeName="StockManagerModel.TimeAlert">
+        <MappingFragment StoreEntitySet="TimeAlerts">
+          <ScalarProperty Name="alertID" ColumnName="alertID" />
+          <ScalarProperty Name="time" ColumnName="time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Transactions">
+      <EntityTypeMapping TypeName="StockManagerModel.Transaction">
+        <MappingFragment StoreEntitySet="Transaction">
+          <ScalarProperty Name="TransID" ColumnName="TransID" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="NoOfShares" ColumnName="NoOfShares" />
+          <ScalarProperty Name="PricePerShare" ColumnName="PricePerShare" />
+          <ScalarProperty Name="PID" ColumnName="PID" />
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserInfoes">
+      <EntityTypeMapping TypeName="StockManagerModel.UserInfo">
+        <MappingFragment StoreEntitySet="UserInfo">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Watchlists">
+      <EntityTypeMapping TypeName="StockManagerModel.Watchlist">
+        <MappingFragment StoreEntitySet="Watchlist">
+          <ScalarProperty Name="WatchlistId" ColumnName="WatchlistId" />
+          <ScalarProperty Name="WLName" ColumnName="WLName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="WatchlistData" TypeName="StockManagerModel.WatchlistData" StoreEntitySet="WatchlistData">
+      <EndProperty Name="Company">
+        <ScalarProperty Name="CID" ColumnName="CID" />
+      </EndProperty>
+      <EndProperty Name="Watchlist">
+        <ScalarProperty Name="WatchlistId" ColumnName="WatchlistID" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping>

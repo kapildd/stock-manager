@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="123.63.97.18" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-StockManager-20140211194118;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-StockManager-20140211194118.mdf" />
+  <setParameter name="connString-Web.config Connection String" value="Data source=.\SQLEXPRESS;Integrated Security=true;DataBase=StockManager;" />
+</parameters>

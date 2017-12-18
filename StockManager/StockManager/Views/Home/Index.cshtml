@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Home";
+    ViewBag.Message = "Welcome to Stock Manager";
+}
+
+<header>
+    <style>
+    #border
+    {
+	    color: #cccccc;
+	    background-color: #000000;
+	    font-family:"Lucida Console", Monaco, monospace;
+	    position:relative;
+	    height:28px; 
+	    overflow:hidden;
+	    font-size: 1.5em;
+    }
+    #content
+    {
+	    position:absolute;
+	    left:0px;
+	    line-height:25px;
+	    white-space:nowrap;
+    }
+    .stockbox
+    {
+	    margin:0 10px;
+    }
+    .stockbox a
+    {
+	    color: #cccccc;
+	    text-decoration : underline;
+    }
+    </style>
+
+    <script type="text/javascript">
+	    var scrollspeed=4;
+        var pxptick=scrollspeed;
+        function startmarquee()
+        {
+
+            marqueediv=document.getElementById("content");
+            marqueewidth=document.getElementById("border").offsetWidth;
+            contentwidth=marqueediv.offsetWidth;
+            setInterval("scrollmarquee()",50);
+        }
+        function scrollmarquee()
+        {
+            if (parseInt(marqueediv.style.left)>(contentwidth*(-1)))
+            marqueediv.style.left=parseInt(marqueediv.style.left)-pxptick+"px";
+            else
+            marqueediv.style.left=parseInt(marqueewidth)+"px";
+        }
+        window.onload=startmarquee;
+</script>
+
+</header>
+
+
+<div id="border" onmouseover="pxptick=0" onmouseout="pxptick=scrollspeed">
+<div id="content">
+    
+    @{
+        for (int i = 0; i < ViewBag.Company.Count;i++)
+        { 
+            if(@ViewBag.Change[i]>=0)
+            {
+                <span class="stockbox"><span>@ViewBag.Company[i]</span>
+                <span style="color:#4cff00">@ViewBag.LTP[i]</span>
+                <span style="color:#4cff00">@ViewBag.Change[i]</span>
+                </span>
+            }
+            else
+            {
+                <span class="stockbox"><span>@ViewBag.Company[i]</span>
+                <span style="color:#ff0000">@ViewBag.LTP[i]</span>
+                <span style="color:#ff0000">@ViewBag.Change[i]</span>
+                </span>
+            }
+        }
+    }
+        
+
+</div>
+</div>
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+        </div>
+    </section>
+}
+
+@{
+    if(ViewBag.Username != "")
+    {
+        <p>Welcome, @ViewBag.Username!</p>
+    }
+}
+
+
+
+@{
+    for(int i=0;i<@ViewBag.S.Count && i<10;i++)
+    {
+        <div>
+        <p style="color:#473dd0;font-size:large"><a href=@ViewBag.S[i].url>@ViewBag.S[i].title</a></p>
+        <p style="color:#000000;font-size:medium">@ViewBag.S[i].content</p>
+        </div>
+    }
+}

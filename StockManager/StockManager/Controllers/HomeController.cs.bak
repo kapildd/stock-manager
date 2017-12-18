@@ -1,0 +1,457 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+
+namespace StockManager.Controllers
+{
+    public class HomeController : Controller
+    {
+        //
+        // GET: /Home/
+
+        public ActionResult Index()
+        {
+            /* We can make use of WebSecurity.CurrentUserId
+             * More on: http://www.w3schools.com/aspnet/prop_websecurity_currentuserid.asp
+             *          http://www.w3schools.com/aspnet/webpages_ref_websecurity.asp
+             */
+
+            if (Session["Username"] != null)
+                ViewBag.Username = Session["Username"];
+            else
+                ViewBag.Username = "";
+            string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+            SqlConnection cn = new SqlConnection(connString);
+            cn.Open();
+
+            SqlCommand cm = new SqlCommand("Select TOP 50 Name,Change from Company c,StockData s where c.CID = s.CID", cn);
+            SqlDataReader reader = cm.ExecuteReader();
+            List<string> Company = new List<string>();
+            List<double> Change = new List<double>();
+            while (reader.Read())
+            {
+                string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+                SqlConnection cn = new SqlConnection(connString);
+                cn.Open();
+
+                SqlCommand cm = new SqlCommand("Select TOP 50 Name,Change from Company c,StockData s where c.CID = s.CID", cn);
+                SqlDataReader reader = cm.ExecuteReader();
+                List<string> Company = new List<string>();
+                List<double> Change = new List<double>();
+                while (reader.Read())
+                {
+                    Company.Add(reader[0].ToString());
+                    Change.Add(Double.Parse(reader[1].ToString()));
+                }
+                ViewBag.Company = Company;
+                ViewBag.Change = Change;
+                reader.Close();
+                cn.Close();
+            }
+
+
+            
+            ISearchResult searchClass = new GoogleSearch("TCS News");
+            var list = searchClass.Search();
+            ViewBag.S = list;
+            
+
+            return View();
+        }
+
+        //
+        // GET: /Home/Portfolios
+
+        public ActionResult Portfolios()
+        {
+
+            if (Session["Username"] == null)
+            {
+                return Redirect("../Login");
+            }
+
+            //user
+            string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+            SqlConnection cn = new SqlConnection(connString);
+            cn.Open();
+            SqlCommand cm = new SqlCommand("select Name from Portfolio where UID=" + Session["Userid"] + "", cn);
+            SqlDataReader reader = cm.ExecuteReader();
+            int count=0;
+            List<string> portfolioList=new List<string>();
+            while (reader.Read())
+            {
+                string name = reader[0].ToString();
+                portfolioList.Add(name);
+                count++;
+            }
+            ViewBag.portfolioCount = count;
+            ViewBag.portfolioList = portfolioList;
+
+            reader.Close();
+            cn.Close();
+            return View();
+        }
+        //
+        // GET: /Home/PortfolioDetails
+
+        public ActionResult PortfolioDetails()
+        {
+            if (Session["Username"] == null)
+                return Redirect("../Login");
+            else
+            {
+                string portfolioName = "";
+                string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+                SqlConnection cn = new SqlConnection(connString);
+                cn.Open();
+                if (Request.Form["Portfolio"] == "Add new portfolio")
+                {//post
+                    portfolioName = Request.Form["PortfolioName"];
+                    SqlCommand cm = new SqlCommand("Insert into Portfolio(Name,UID) values ('" + portfolioName + "'," + Session["Userid"] + ")", cn);
+                    cm.ExecuteNonQuery();
+                    cm = new SqlCommand("Select C.Name,P.Cost,P.CurrentHolding,P.RealizedProfitLoss,P.UnrealizedProfitLoss from Company C,PortfolioData P where PID in (Select PID from Portfolio where UID =" + Session["Userid"] + " and name='" + portfolioName + "')", cn);
+                    SqlDataReader reader = cm.ExecuteReader();
+                    List<List<string>> portfolioData = new List<List<string>>();
+                    while (reader.Read())
+                    {
+                        List<string> row = new List<string>();
+                        row.Add(reader[2].ToString());
+                        row.Add(reader[3].ToString());
+                        row.Add(reader[4].ToString());
+                        row.Add(reader[5].ToString());
+                        portfolioData.Add(row);
+                    }
+                    ViewBag.portfolioData = portfolioData;
+                }
+                else
+                {//get
+                    portfolioName = Request.QueryString["name"];
+                    SqlCommand cm = new SqlCommand("Select C.Name,P.Cost,P.CurrentHolding,P.RealizedProfitLoss,P.UnrealizedProfitLoss from Company C,PortfolioData P where PID in (Select PID from Portfolio where UID =" + Session["Userid"] + " and name='" + portfolioName + "') and C.CID=P.CID", cn);
+                    SqlDataReader reader = cm.ExecuteReader();
+                    List<List<string>> portfolioData = new List<List<string>>();
+                    while (reader.Read())
+                    {
+                        List<string> row = new List<string>();
+                        row.Add(reader[0].ToString());
+                        row.Add(reader[1].ToString());
+                        row.Add(reader[2].ToString());
+                        row.Add(reader[3].ToString());
+                        row.Add(reader[4].ToString());
+                        portfolioData.Add(row);
+                    }
+                    reader.Close();
+                    ViewBag.portfolioData = portfolioData;
+                }
+                cn.Close();
+            }
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            return View();
+        }
+
+		 //
+        // GET: /Home/Watchlist
+        public ActionResult Watchlist()
+        {
+            ViewBag.hide = true;
+            if (Session["Username"] == null)
+                return Redirect("../Login");
+            else
+            {
+                string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+                SqlConnection cn = new SqlConnection(connString);
+                cn.Open();
+                SqlCommand cm;
+                SqlDataReader reader;
+                
+                bool added = false; // notes down whether a watchlist was added , helps in setting up a name
+                ViewBag.alreadyExistsError = false;// indicates error while inserting new watchlist
+                    
+                if(Request.Form["Watchlist"] == "Add new watchlist")
+                {//post
+                    string watchlistName = Request.Form["WatchlistName"];
+                    //check existence
+                    cm = new SqlCommand("select count(*) from Watchlist where WLName='" + watchlistName + "' and UID=" + Session["Userid"], cn);
+                    SqlDataReader reader2=cm.ExecuteReader();
+                    int count = 0;
+                    while (reader2.Read()) 
+                        count = Int32.Parse(reader2[0].ToString());
+                    reader2.Close();
+                    if (count == 0)
+                    {
+                        //insert
+                        cm = new SqlCommand("Insert into Watchlist(WLName,UID) values ('" + watchlistName + "'," + Session["Userid"] + ")", cn);
+                        cm.ExecuteNonQuery();
+                        added = true;
+                    }else
+                        //exists
+                        ViewBag.alreadyExistsError = true;
+                }
+                //load watchlists
+                int userid = Int32.Parse(Session["Userid"].ToString());
+                cm = new SqlCommand("Select WatchlistID,WLName from Watchlist where UID =" + Session["Userid"], cn);
+                reader = cm.ExecuteReader();
+                List<int> WatchListID = new List<int>();
+                List<string> WatchListName = new List<string>();
+                while (reader.Read())
+                {
+                    WatchListID.Add(Int32.Parse(reader[0].ToString()));
+                    WatchListName.Add(reader[1].ToString());
+                }
+                ViewBag.WatchListID = WatchListID;
+                ViewBag.WatchListName = WatchListName;
+                //useful to show alert messages
+                if (added)
+                    ViewBag.addedListName = Request.Form["WatchlistName"];
+                else
+                    ViewBag.addedListName = "";
+                reader.Close();
+                cn.Close();
+            }
+            return View();
+        }
+
+        //AJAX call handler
+        public string GetWatchList()
+        {
+            if (Request.Params[0].ToString() == "") return "";
+            int wid=Int32.Parse(Request.Params[0].ToString());
+            Response.Headers["Cache-Control"] = "no-cache, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+            SqlConnection cn = new SqlConnection(connString);
+            cn.Open();
+            int userid = Int32.Parse(Session["Userid"].ToString());
+            List<string> headers = new List<string>();
+            headers.Add("Company"); headers.Add("Exchange"); headers.Add("Price"); headers.Add("Change"); headers.Add("% Change"); headers.Add("Day High"); headers.Add("Day Low");
+            headers.Add("Open"); headers.Add("Previous Close"); headers.Add("52 Week High"); headers.Add("52 Week Low"); headers.Add("Update Time");
+            SqlCommand cm = new SqlCommand("Select C.Name,C.ExchangeName,SD.LTP,SD.Change,SD.PercChange,SD.DayHigh,SD.DayLow,SD.DayOpen,SD.PrevClose,SD.Week52High,SD.Week52Low,SD.LTPTime from WatchlistData WD, StockData SD, Company C where C.CID=WD.CID and WD.CID=SD.CID and WD.WatchlistID =" + wid +" order by 1", cn);
+            SqlDataReader reader = cm.ExecuteReader();
+            List<List<string>> data=new List<List<string>>();
+            List<int> color=new List<int>();
+            while (reader.Read())
+            {
+                List<string> row = new List<string>();
+                for (int i = 0; i < headers.Count;i++)
+                    row.Add(reader[i].ToString());
+                data.Add(row);
+                if (Double.Parse(row[3]) < 0) color.Add(0);
+                else if (Double.Parse(row[3]) > 0) color.Add(1);
+                else
+                    color.Add(2);
+            }
+            reader.Close();
+            cn.Close();
+            return ConvertDataToHTMLTable(headers, data, color);
+        }
+
+        private string ConvertDataToHTMLTable(List<string> headers, List<List<string>> data, List<int> color)
+        {
+            string htmlCode = "<table><tr>";
+            int[][] colorVal=new int[][]{new int[]{255,125,125},new int[]{125,255,125},new int[]{255,255,255}};
+            string[] clr=new string[]{"red","green","white"};
+            foreach(string name in headers)
+            {
+                htmlCode += "<th>" + name + "</th>";
+            }
+            htmlCode += "</tr>";
+            int r=0;
+            foreach (List<string> row in data)
+            {
+                htmlCode+="<tr>";
+                int column = 0;
+                foreach (string val in row)
+                {
+                    string cssclass = "";
+                    if (clr[color[r]] == "red")
+                        cssclass = " class=wldown";
+                    else if(clr[color[r]] == "green")
+                        cssclass = " class=wlup";
+                    if(column==2)
+                        htmlCode += "<td"+cssclass+">" + val + "</td>";
+                    else if (column < 3 || column > 4)
+                        htmlCode += "<td>" + val + "</td>";
+                    else
+                        htmlCode += "<td style=\"background-color:rgb(" + colorVal[color[r]][0] + "," + colorVal[color[r]][1] + "," + colorVal[color[r]][2] + "\"))>" + val + "</td>";
+                    column++;
+                }
+                htmlCode += "</tr>";
+                r++;
+            }
+            //htmlCode += "<tr><a href=\""++"\"></a></tr>"; code for delete company
+            htmlCode += "</table>";
+            return htmlCode;
+        }
+
+        //
+        //
+        [HttpPost]
+        public string AddToWatchlist()
+        {
+            string companyName = Request.Params[0], watchlistname = Request.Params[1];
+            if (companyName == "" || watchlistname=="")
+                return "Enter company name";
+            if (companyName.IndexOf("{") == -1 || companyName.IndexOf("}") == -1)
+                return "Enter valid company name";
+            int index=companyName.IndexOf("{")+1,endIndex=companyName.IndexOf("}")-1;
+            companyName = companyName.Substring(index, endIndex - index + 1);
+            if(companyName.IndexOf(":")==-1)
+                return "Enter valid company name";
+            endIndex = companyName.IndexOf(":");
+            string exchange = companyName.Substring(0, endIndex);
+            string scrip = companyName.Substring(endIndex+1,companyName.Length-endIndex-1);
+            string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+            SqlConnection cn = new SqlConnection(connString);
+            cn.Open();
+            SqlCommand cm = new SqlCommand("Select CID from Company where ExchangeName = '"+exchange+"' and Scrip='"+scrip+"'", cn);
+            SqlDataReader reader = cm.ExecuteReader();
+            int count = 1, cid=-1;
+            while (reader.Read())
+            {
+                cid = Int32.Parse(reader[0].ToString());
+            }
+            reader.Close();
+            if(cid==-1)
+                return "No such company";
+            int wid = Int32.Parse(watchlistname);
+            cm = new SqlCommand("Select count(*) from WatchlistData where watchlistID = " + wid + " and CID=" + cid, cn);
+            reader = cm.ExecuteReader();
+            while (reader.Read())
+            {
+                count = Int32.Parse(reader[0].ToString());
+            }
+            reader.Close();
+            if(count==0)
+            {
+                cm = new SqlCommand("insert into WatchlistData(WatchlistId,CID) values(" + wid + "," + cid + ")", cn);
+                cm.ExecuteNonQuery();
+                cn.Close();
+                return "Added to watchlist";
+            }
+            else
+            {
+                cn.Close();
+                return "This company is already in the watchlist";
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public struct SearchType
+    {
+        public string url;
+        public string title;
+        public string content;
+        public FindingEngine engine;
+        public enum FindingEngine { Google, Bing, GoogleAndBing };
+    }
+
+    public interface ISearchResult
+    {
+        SearchType.FindingEngine Engine { get; set; }
+        string SearchExpression { get; set; }
+        List<SearchType> Search();
+    }
+
+    public class BingSearch : ISearchResult
+    {
+        public BingSearch(string searchExpression)
+        {
+            this.Engine = SearchType.FindingEngine.Bing;
+            this.SearchExpression = searchExpression;
+        }
+        public SearchType.FindingEngine Engine { get; set; }
+        public string SearchExpression { get; set; }
+
+        public List<SearchType> Search()
+        {
+            // our appid from bing - 3F4313687C37F1....23A79E181D0A25
+            const string urlTemplate = @"http://api.search.live.net/json.aspx?AppId=3F4313687C37F1...23A79E181D0A25& \
+                                            Market=en-US&Sources=Web&Adult=Strict&Query={0}&Web.Count=50";
+            const string offsetTemplate = "&Web.Offset={1}";
+            var resultsList = new List<SearchType>();
+            int[] offsets = { 0, 50, 100, 150 };
+            Uri searchUrl;
+            foreach (var offset in offsets)
+            {
+                if (offset == 0)
+                    searchUrl = new Uri(string.Format(urlTemplate, SearchExpression));
+                else
+                    searchUrl = new Uri(string.Format(urlTemplate + offsetTemplate, 
+                                        SearchExpression, offset));
+
+                var page = new WebClient().DownloadString(searchUrl);
+                var o = (JObject)JsonConvert.DeserializeObject(page);
+
+                var resultsQuery=from result in o["SearchResponse"]["Web"]["Results"].Children()
+                  select new SearchType
+                  {
+                      url = result.Value<string>("Url").ToString(),
+                      title = Regex.Replace((HttpUtility.HtmlDecode(result.Value<string>("title").ToString())), "<[^>]+>", "").ToString(),
+                      content = Regex.Replace((result.Value<string>("content").ToString()), "<[^>]+>", "").ToString(),
+                      engine = this.Engine
+                  };
+
+                resultsList.AddRange(resultsQuery);
+            }
+            return resultsList;
+        }
+    }
+
+    public class GoogleSearch : ISearchResult
+    {
+        public GoogleSearch(string searchExpression)
+        {
+            this.Engine = SearchType.FindingEngine.Google;
+            this.SearchExpression = searchExpression;
+        }
+        public SearchType.FindingEngine Engine { get; set; }
+        public string SearchExpression { get; set; }
+
+        public List<SearchType> Search()
+        {
+            const string urlTemplate = @"http://ajax.googleapis.com/ajax/services/search/web?v=1.0& \
+                                        rsz=large&safe=active&q={0}&start={1}";
+            var resultsList = new List<SearchType>();
+            int[] offsets = { 0, 8, 16, 24, 32, 40, 48 };
+            foreach (var offset in offsets)
+            {
+                var searchUrl = new Uri(string.Format(urlTemplate, SearchExpression, offset));
+                var page = new WebClient().DownloadString(searchUrl);
+                var o = (JObject)JsonConvert.DeserializeObject(page);
+
+                var resultsQuery =
+                  from result in o["responseData"]["results"].Children()
+                  select new SearchType
+                  {
+                      url = result.Value<string>("url").ToString(),
+                      title = Regex.Replace((HttpUtility.HtmlDecode(result.Value<string>("title").ToString())), "<[^>]+>","").ToString(),
+                      content = Regex.Replace((result.Value<string>("content").ToString()),"<[^>]+>","").ToString(),
+                      engine = this.Engine
+                  };
+
+                resultsList.AddRange(resultsQuery);
+            }
+            return resultsList;
+        }
+    }
+}

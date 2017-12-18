@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+
+<header>
+    <style>
+    #border
+    {
+	    color: #cccccc;
+	    background-color: #000000;
+	    font-family:"Lucida Console", Monaco, monospace;
+	    position:relative;
+	    height:20px; 
+	    overflow:hidden;
+	    font-size: 0.7em;
+    }
+    #content
+    {
+	    position:absolute;
+	    left:0px;
+	    line-height:20px;
+	    white-space:nowrap;
+    }
+    .stockbox
+    {
+	    margin:0 10px;
+    }
+    .stockbox a
+    {
+	    color: #cccccc;
+	    text-decoration : underline;
+    }
+    </style>
+
+    <script type="text/javascript">
+	    var scrollspeed=4;
+        var pxptick=scrollspeed;
+        function startmarquee()
+        {
+
+            marqueediv=document.getElementById("content");
+            marqueewidth=document.getElementById("border").offsetWidth;
+            contentwidth=marqueediv.offsetWidth;
+            setInterval("scrollmarquee()",50);
+        }
+        function scrollmarquee()
+        {
+            if (parseInt(marqueediv.style.left)>(contentwidth*(-1)))
+            marqueediv.style.left=parseInt(marqueediv.style.left)-pxptick+"px";
+            else
+            marqueediv.style.left=parseInt(marqueewidth)+"px";
+        }
+        window.onload=startmarquee;
+</script>
+
+</header>
+
+
+<div id="border" onmouseover="pxptick=0" onmouseout="pxptick=scrollspeed">
+<div id="content">
+    
+    @{
+        for (int i = 0; i < ViewBag.Company.Count;i++)
+        { 
+            if(@ViewBag.Change[i]>=0)
+            {
+                <span class="stockbox"><span>@ViewBag.Company[i]</span>
+                <span style="color:#4cff00">@ViewBag.Change[i]</span>
+                </span>
+            }
+            else
+            {
+                <span class="stockbox"><span>@ViewBag.Company[i]</span>
+                <span style="color:#ff0000">@ViewBag.Change[i]</span>
+                </span>
+            }
+        }
+    }
+        
+
+</div>
+</div>
+
+<p>Welcome, @ViewBag.Username!</p>
+
+
+
+@{
+    for(int i=0;i<ViewBag.S.Count;i++)
+    {
+        <div>
+        <h2><a href=@ViewBag.S[i].url>@ViewBag.S[i].title</a></h2>
+        <h6>@ViewBag.S[i].content</h6>
+        </div>
+    }
+}

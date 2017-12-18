@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Portfolios";
+}
+
+<script>
+function autosuggest(str)
+{
+    var xmlhttp;
+    if (str=="")
+      {
+      document.getElementById("txtHint").innerHTML="";
+      return;
+      }
+    if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp=new XMLHttpRequest();
+
+      }
+    else
+      {// code for IE6, IE5
+      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.open("POST", "/Home/GetWatchList", true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    
+    xmlhttp.onreadystatechange=function()
+      {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+        document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+        }
+      }
+    xmlhttp.send(str);
+    setTimeout(showWatchlist, 5000, str);
+}
+</script>
+
+<h2>Portfolios</h2>
+
+<table>
+    <tr><th>Portfolio Name</th></tr>
+    @foreach(string name in ViewBag.portfolioList)
+    {
+        <tr>
+            <td style="border:solid thin"><a href="../Home/PortfolioDetails?name=@name">@name</a></td>
+        </tr>
+    }
+</table>
+
+<form method="post" action="../Home/PortfolioDetails" runat="server">
+    <input type="text" name="PortfolioName" title="Name"/>
+    <input type="submit" name="Portfolio" value="Add new portfolio">
+</form>
+
+<asp:TextBox ID="txtCompanyName" runat="server" Width="350px" />
+
+<!-- foreach (string nm in ViewBag.allCompanyName)
+{
+    
+} -->

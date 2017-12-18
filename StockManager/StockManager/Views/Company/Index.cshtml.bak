@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Company Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="../Scripts/dygraph-combined.js"></script>
+<form action="~/Views/Company/Index" method="post">
+    <input type="text" id="search" placeholder="Type name of company" required />
+    <input type="submit" value="Go" id="submit" />
+</form>
+<div id="graphdiv" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+    var url = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CompanyApi" })';
+    $('#search').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: url,
+                data: { query: request.term },
+                dataType: 'json',
+                type: 'GET',
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item,
+                            value: item
+                        }
+                    }));
+                }
+            })
+        },
+        select: function (event, ui) {
+            $('#search').val(ui.item.value);
+            return false;
+        }
+    });
+        /*var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Company/getHistoricalData", true);
+        
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var strdata = xmlhttp.responseText;
+                var stockdata = [[]];
+                stockdata = strdata;
+        */
+    
+        var g = new Dygraph(document.getElementById("graphdiv"),
+                        "/Company/getHistoricalData?q=TCS&exch=NSE&interval=60&period=50d",
+                          {
+                              animatedZooms: true,
+                              showRangeSelector: true,
+                              showRoller: false,
+                              labels: ["Date", "Price"]
+                          });
+        /*    }
+        }
+        xmlhttp.send("TCS","NSE","60","1d");*/
+    
+
+</script>
+<p id="content"></p>
+<div>
+  <label for="tags">Tags: </label>
+  <input id="tags">
+</div>
+ 
+

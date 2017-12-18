@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "Watchlist";
+}
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+            </hgroup>
+        </div>
+    </section>
+}
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style type="text/css">
+    .wlup {
+        padding: 0.25em 0em 0.25em 0em;
+        border: 1px solid;
+        align-content:center;
+        width:100%;
+        background-color:rgb(125,255,125);
+    }
+    .wldown {
+        padding: 0.25em 0em 0.25em 0em;
+        border: 1px solid;
+        align-content:center;
+        width:100%;
+        background-color:rgb(255,125,125);
+    }
+</style>
+
+<form action=""> 
+<select name="watchlists" id="watchlists" onchange="setWatchlist(this.value)">
+<option value="">Select a watchlist:</option>
+@for(int i=0; i<ViewBag.WatchListID.Count; i++)
+{ 
+    <option value="@ViewBag.WatchListID[i]">@ViewBag.WatchListName[i]</option>
+}
+</select>
+</form>
+
+<form method="post" action="../Home/Watchlist" runat="server">
+    <input type="text" name="WatchlistName" placeholder="Name of new watchlist"/>
+    <input type="submit" name="Watchlist" value="Add new watchlist">
+</form>
+
+<form id="renameForm" hidden="true">
+    <input type="button" id="RenameWL" value="Rename this watchlist" onclick="renameWatchlist()"/>
+    <input type="button" id="DeleteWL" value="Delete this watchlist" onclick="deleteWatchlist()" />
+</form>
+
+<div id="watchlistData"></div>
+
+<form id="addButton" method="post" hidden="true">
+    <input type="text" id="companyName" placeholder="Type name of a company" required />
+    <input type="button" value="Add company" id="addCompany" onclick="addToWL()" />
+    <input type="button" value="Delete selected companies" id="deleteCompanies" onclick="deleteFromWL()" />
+</form>
+
+<script>
+    var str = "", running = false;
+    var stockPrice = [], checkDeleteStatus = [];
+    function setWatchlist(s)
+    {
+        str = s;
+        if (s == "") {
+            document.getElementById("addButton").style.display = "none";
+            document.getElementById("watchlistData").style.display = "none";
+            document.getElementById("renameForm").style.display = "none";
+        }
+        else {
+            document.getElementById("addButton").style.display = "block";
+            document.getElementById("watchlistData").style.display = "block";
+            document.getElementById("renameForm").style.display = "block";
+        }
+        stockPrice = [];
+        checkDeleteStatus = [];
+        refresh(s);
+    }
+
+    function checkPrice()
+    {
+        elements = document.getElementsByTagName("td");
+        for (var i = 0; i < elements.length; i++) {
+            if (i % 12 == 2) {
+                if (stockPrice!=null && stockPrice[Math.floor(i / 12)] == elements[i].textContent)
+                    elements[i].style.backgroundColor = "#efeeef";
+                if (stockPrice == null) {
+                    stockPrice.push(elements[i].textContent);
+                    checkDeleteStatus.push("");
+                }
+                else
+                    stockPrice[Math.floor(i / 12)] = elements[i].textContent;
+            }
+        }
+    }
+
+    function changeClasses()
+    {
+        elements = document.getElementsByClassName("wlup");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = "#efeeef";
+        }
+        elements = document.getElementsByClassName("wldown");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = "#efeeef";
+        }
+    }
+
+    function refresh(s)
+    {
+        var xmlhttp;
+        if (str == "") {
+            return;
+        }
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/GetWatchList", true);
+        xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2005 00:00:00 GMT");
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("watchlistData").innerHTML = xmlhttp.responseText;
+                xmlhttp.responseText = null;
+                checkPrice();
+                addDeleteCol();
+                setTimeout(changeClasses, 1000);
+            }
+        }
+        xmlhttp.send(str);
+    }
+    setInterval(refresh, 5000, str);
+    
+    function addDeleteCol()
+    {
+        $('#stocktable').find('tr').each(function () {
+            var row = $(this);
+            if(row.index()!=0)
+                row.append('<td><input type="checkbox" ' + checkDeleteStatus[row.index()] + ' onclick="checkboxClicked('+row.index()+')""></td>');
+            else
+                row.append('<th>Delete</th>');
+        });
+    }
+
+    function deleteFromWL()
+    {
+        var confirmResponse = confirm("Are you sure?");
+        if (!confirmResponse)
+            return;
+        var company = [], index = [];
+        $('#stocktable').find('tr').each(function () {
+            var row = $(this);
+            if (row.index() != 0 && checkDeleteStatus[row.index()]=='checked')
+            {
+                row.find('td').each(function () {
+                    if ($(this).index() == 0)
+                        company.push($(this).html());
+                    if ($(this).index() == 1)
+                        index.push($(this).html());
+                }
+                );
+            }
+        });
+        for (var i = 0; i < company.length; i++) {
+            var xmlhttp;
+            if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {// code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.open("POST", "/Home/DeleteFromWatchList", true);
+            xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2005 00:00:00 GMT");
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            var x = document.getElementById("watchlists").selectedIndex;
+            var wid = document.getElementsByTagName("option")[x].value;
+                    
+            xmlhttp.send("watchlistid="+wid+"&companyName="+company[i]+"&exchange="+index[i]);
+        }
+        checkDeleteStatus = [];
+        var x = document.getElementById("watchlists").selectedIndex;
+        refresh(document.getElementsByTagName("option")[x].value);
+    }
+
+    function checkboxClicked(index)
+    {
+        checkDeleteStatus[index] = (checkDeleteStatus[index] == "checked") ? '' : "checked";
+    }
+
+    function addToWL()
+    {
+        var xmlhttp;
+        if (str == "") {
+            return;
+        }
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/AddToWatchlist", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var x = document.getElementById("watchlists").selectedIndex;
+                refresh(document.getElementsByTagName("option")[x].value);
+                document.getElementById("companyName").value = "";
+                if (xmlhttp.response != "")
+                    alert(xmlhttp.response);
+            }
+            return false;
+        }
+        var x = document.getElementById("watchlists").selectedIndex;
+        xmlhttp.send("companyName=" + document.getElementById("companyName").value + "&watchlistname=" + document.getElementsByTagName("option")[x].value+"&timestamp="+new Date().getTime());
+        return false;
+    }
+    var url = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CompanyApi" })';
+    $('#companyName').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: url,
+                data: { query: request.term },
+                dataType: 'json',
+                cache : false,
+                type: 'GET',
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item,
+                            value: item
+                        }
+                    }));
+                }
+            })
+        },
+        select: function (event, ui) {
+            $('#companyName').val(ui.item.value);
+            return false;
+        }
+    });
+
+    function renameWatchlist()
+    {
+        var newName = prompt("Enter new name for the watchlist");
+        if (newName == "") {
+            alert("Enter valid string");
+            return;
+        }
+        var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/RenameWatchlist", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (xmlhttp.response != "") {
+                    var x = document.getElementById("watchlists").selectedIndex;
+                    document.getElementsByTagName("option")[x].textContent = newName;
+                    alert(xmlhttp.response);
+                }
+            }
+            return false;
+        }
+        var x = document.getElementById("watchlists").selectedIndex;
+        xmlhttp.send("old="+document.getElementsByTagName("option")[x].textContent+"&new="+newName);
+    }
+
+    function deleteWatchlist() {
+        
+        var confirmResponse = confirm("Are you sure that you want to delete this watchlist?");
+        if (confirmResponse == false) return;
+
+        var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/DeleteWatchlist", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (xmlhttp.response != "") {
+                    document.getElementById("watchlists").selectedIndex = 0;
+                    setWatchlist("");
+                    alert(xmlhttp.response);
+                }
+            }
+            return false;
+        }
+        var x = document.getElementById("watchlists").selectedIndex;
+        xmlhttp.send("WatchlistID="+document.getElementsByTagName("option")[x].value);
+    }
+</script>

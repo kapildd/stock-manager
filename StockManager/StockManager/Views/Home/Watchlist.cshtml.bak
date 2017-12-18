@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Watchlist";
+}
+
+<h2>Watchlist</h2>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+
+<form action=""> 
+<select name="watchlists" id="watchlists" onchange="setWatchlist(this.value)">
+<option value="">Select a watchlist:</option>
+@for(int i=0; i<ViewBag.WatchListID.Count; i++)
+{ 
+    <option value="@ViewBag.WatchListID[i]">@ViewBag.WatchListName[i]</option>
+}
+</select>
+</form>
+
+<form method="post" action="../Home/Watchlist" runat="server">
+    <input type="text" name="WatchlistName" title="Name"/>
+    <input type="submit" name="Watchlist" value="Add new watchlist">
+</form>
+
+<div id="watchlistData"></div>
+
+<form id="addButton" method="post" hidden="true">
+    <input type="text" id="companyName" placeholder="Type name of a company" required />
+    <input type="button" value="Add company" id="submit" onclick="addToWL()" />
+</form>
+
+<script>
+    var str = "", running = false;
+    var stockPrice = [];
+    function setWatchlist(s)
+    {
+        str = s;
+        if (s == "") {
+            document.getElementById("addButton").style.display = "none";
+            document.getElementById("watchlistData").style.display = "none";
+        }
+        else {
+            document.getElementById("addButton").style.display = "block";
+            document.getElementById("watchlistData").style.display = "block";
+        }
+        refresh(s);
+    }
+
+    function checkPrice()
+    {
+        elements = document.getElementsByTagName("td");
+        for (var i = 0; i < elements.length; i++) {
+            if (i % 12 == 2) {
+                if (stockPrice!=null && stockPrice[Math.floor(i / 12)] == elements[i].textContent)
+                    elements[i].style.backgroundColor = "#efeeef";
+                if (stockPrice == null)
+                    stockPrice.push(elements[i].textContent);
+                else
+                    stockPrice[Math.floor(i / 12)] = elements[i].textContent;
+            }
+        }
+    }
+
+    function changeClasses()
+    {
+        elements = document.getElementsByClassName("wlup");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = "#efeeef";
+        }
+        elements = document.getElementsByClassName("wldown");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = "#efeeef";
+        }
+    }
+
+    function refresh(s)
+    {
+        var xmlhttp;
+        if (str == "") {
+            return;
+        }
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/GetWatchList", true);
+        xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2005 00:00:00 GMT");
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("watchlistData").innerHTML = xmlhttp.responseText;
+                xmlhttp.responseText = null;
+                checkPrice();
+                setTimeout(changeClasses, 1000);
+            }
+        }
+        xmlhttp.send(str);
+    }
+    setInterval(function showWatchlist() {
+        var xmlhttp;
+        if (str == "") {
+            return;
+        }
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/GetWatchList", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2005 00:00:00 GMT");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("watchlistData").innerHTML = xmlhttp.responseText;
+                xmlhttp.responseText = null;
+                checkPrice();
+                setTimeout(changeClasses, 1000);
+            }
+        }
+        xmlhttp.send(str);
+
+    }, 5000, str);
+    
+    function addToWL()
+    {
+        var xmlhttp;
+        if (str == "") {
+            return;
+        }
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/AddToWatchlist", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (xmlhttp.response!="")
+                var x = document.getElementById("watchlists").selectedIndex;
+                refresh(document.getElementsByTagName("option")[x].value);
+                document.getElementById("companyName").value = "";
+                alert(xmlhttp.response);
+            }
+            return false;
+        }
+        var x = document.getElementById("watchlists").selectedIndex;
+        xmlhttp.send("companyName=" + document.getElementById("companyName").value + "&watchlistname=" + document.getElementsByTagName("option")[x].value+"&timestamp="+new Date().getTime());
+        return false;
+    }
+    var url = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CompanyApi" })';
+    $('#companyName').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: url,
+                data: { query: request.term },
+                dataType: 'json',
+                cache : false,
+                type: 'GET',
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item,
+                            value: item
+                        }
+                    }));
+                }
+            })
+        },
+        select: function (event, ui) {
+            $('#companyName').val(ui.item.value);
+            return false;
+        }
+    });
+</script>

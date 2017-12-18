@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = ViewBag.PortfolioName;
+}
+
+<h2>@ViewBag.PortfolioName</h2>
+
+<table>
+    <tr><th>Company Name</th> <th>Cost</th><th>Current Holdings</th><th>Realized Profit/Loss</th><th>Unrealized Profit/Loss</th></tr>
+    @foreach(List<string> row in ViewBag.portfolioData)
+    {
+        <tr>
+            @foreach(string val in row)
+            {
+                <td>@val</td>
+            }
+        </tr>
+    }
+</table>
+
+<form>
+    <input type="text" name="company" placeholder="Company Name"/>
+    <select name="operation">
+        <option>Buy</option>
+        <option>Sell</option>
+    </select>
+    <input type="text" name="quantity" placeholder="Quantity" />
+    <input type="text" name="price" placeholder="Price per share" />
+    <input type="datetime" name="time" />
+</form>

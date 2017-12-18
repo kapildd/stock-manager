@@ -1,0 +1,4 @@
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\bin\StockManagerService.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\bin\StockManagerService.pdb
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\obj\Release\StockManagerService.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\obj\Release\StockManagerService.pdb

@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+
+<h2>Register</h2>
+
+<form method="post" action="../Login/Register" runat="server">
+    UserName:<br /><input type="text" name="username" value="@ViewBag.UserName"/> @ViewBag.UsernameNotUnique<br />
+    Password:<br /><input type="password" name="password" /><br />
+    Repeat Password:<br /><input type="password" name="rpassword" /> @ViewBag.PasswordMismatch<br />
+    Email:<br /><input type="email" name="email" value="@ViewBag.Email" /><br /> @ViewBag.EmailRegistered<br />
+    <input type="submit" name="Register" value="Register" />
+</form>

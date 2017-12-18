@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Company Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="../Scripts/dygraph-combined.js"></script>
+<style type="text/css">
+    table.fixed {table-layout:fixed; width:500px;}/*Setting the table width is important!*/
+    table.fixed td {overflow:hidden;}/*Hide text outside the cell.*/
+    table.fixed td:nth-of-type(1) {width:125px;}/*Setting the width of column 1.*/
+    table.fixed td:nth-of-type(2) {width:125px;}/*Setting the width of column 2.*/
+    table.fixed td:nth-of-type(3) {width:125px;}/*Setting the width of column 3.*/
+    table.fixed td:nth-of-type(4) {width:125px;}/*Setting the width of column 4.*/
+</style>
+
+<form name="companyDetails" action="../Company/Index" method="post">
+    <input type="text" name="companyName" id="search" placeholder="Type name of company" required />
+    <input type="submit" name="SearchButton" value="Search" id="submit" />
+</form>
+@{
+    if(ViewBag.show)
+    {
+        <p style="font-size:48px; font-weight:700;">@ViewBag.companyName2</p>
+        <h1>@ViewBag.exchangeName:@ViewBag.companyName</h1>
+        <table class="fixed">
+            <tr><th>Last Traded Price:</th><td>@ViewBag.LTP</td><th>LTP Time:</th><td>@ViewBag.LTPTime</td></tr>
+            <tr><th>Change:</th><td>@ViewBag.change</td><th>%Change:</th><td>@ViewBag.percChange</td></tr>
+            <tr><th>Prev. Close:</th><td>@ViewBag.prevClose</td><th>Day Open:</th><td>@ViewBag.dayOpen</td></tr>
+            <tr><th>Day High:</th><td>@ViewBag.dayHigh</td><th>Day Low:</th><td>@ViewBag.dayLow</td></tr>
+            <tr><th>52 Week High:</th><td>@ViewBag.week52High</td><th>52 Week Low:</th><td>@ViewBag.week52Low</td></tr>
+            <tr><th>Volume:</th><td>@ViewBag.volume</td><td></td><td></td></tr>
+        </table>
+    }
+}
+<div id="graphdiv" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+    var url = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CompanyApi" })';
+    $('#search').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: url,
+                data: { query: request.term },
+                dataType: 'json',
+                type: 'GET',
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item,
+                            value: item
+                        }
+                    }));
+                }
+            })
+        },
+        select: function (event, ui) {
+            $('#search').val(ui.item.value);
+            return false;
+        }
+    });
+
+    function drawGraph() {
+        if ("@ViewBag.companyName" != "") {
+            var g = new Dygraph(document.getElementById("graphdiv"),
+                            "/Company/getHistoricalData?q=@ViewBag.companyName&exch=@ViewBag.exchangeName&interval=10&period=1d",
+                              {
+                                  labels: ["X", "Price"]
+                              });
+        }
+    }
+    setInterval(drawGraph, 60000);
+    drawGraph();
+    
+</script>
+ 
+

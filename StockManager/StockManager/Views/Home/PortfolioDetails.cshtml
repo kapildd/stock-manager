@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = ViewBag.portfolioName;
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="../Content/jquery.datetimepicker.css"/ >
+<script src="../Scripts/jquery.datetimepicker.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $(function () {
+            $('#datepicker').datetimepicker();
+        });
+    });
+
+        jQuery(function ($) {
+            var url = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CompanyApi" })';
+            $('#companyName').autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: url,
+                        data: { query: request.term },
+                        dataType: 'json',
+                        cache: false,
+                        type: 'GET',
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item,
+                                    value: item
+                                }
+                            }));
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    $('#companyName').val(ui.item.value);
+                    return false;
+                }
+            });
+        });
+
+    function addTransaction()
+    {
+        //validation
+        if(new Date(document.getElementById('datepicker').value)> new Date()) 
+        {
+            alert("You cannot enter date or time from future!");
+            return;
+        }
+        if (document.getElementById('companyName').value.length == 0)
+        {
+            alert("Enter company name");
+            return;
+        }
+        if (document.getElementById('quantity').value < 0 || document.getElementById('price').value < 0)
+        {
+            alert("Quantity or Price cannot be negative!");
+            return;
+        }
+        //
+        var xmlhttp;
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("POST", "/Home/AddTransactionToPortfolio", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert(xmlhttp.responseText);
+                //refreshPortfolio();
+            }
+        }
+        var companyName = document.getElementById('companyName').value, op = document.getElementById('op').selectedIndex, quantity = document.getElementById('quantity').value;
+        var price = document.getElementById('price').value, datetime=document.getElementById('datepicker').value;
+        xmlhttp.send("companyName=" + companyName + "&op=" + (op == 0 ? "Buy" : "Sell") + "&quantity=" + quantity + "&price=" + price + "&datetime=" + datetime);
+        refresh();
+    }
+</script>
+
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+            </hgroup>
+        </div>
+    </section>
+}
+
+<table>
+    <tr><th>Company Name</th> <th>Exchange</th> <th>Cost</th><th>Current Holdings</th><th>Realized Profit/Loss</th><th>Unrealized Profit/Loss</th></tr>
+    @foreach(List<string> row in ViewBag.portfolioData)
+    {
+        <tr>
+            @foreach(string val in row)
+            {
+                <td>@val</td>
+            }
+        </tr>
+    }
+</table>
+
+<form>
+    <input type="text" id="companyName" name="company" placeholder="Company Name" style="width:125px"/>
+    <select id="op" name="operation">
+        <option>Buy</option>
+        <option>Sell</option>
+    </select>
+    <input type="text" id="quantity" name="quantity" placeholder="Quantity" style="width:125px"/>
+    <input type="text" id="price" name="price" placeholder="Price per share" style="width:125px"/>
+    <input type="text" id="datepicker" name="date" placeholder="Date and Time" style="width:125px" />
+    <input type="button" name="AddTransaction" value="Add transaction" onclick="addTransaction()" /> 
+</form>

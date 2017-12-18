@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="HostedWcfService" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\TOSHIBA\\Documents\\Visual\ Studio\ 2012\\Projects\\StockManagerService\\StockManagerService\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Users\\TOSHIBA\\Documents\\Visual\ Studio\ 2012\\Projects\\StockManagerService\\StockManagerService\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+</parameters>

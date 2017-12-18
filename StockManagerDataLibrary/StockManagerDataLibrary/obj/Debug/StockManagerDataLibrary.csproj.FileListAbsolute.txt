@@ -1,0 +1,12 @@
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\obj\Debug\StockManagerDataLibrary.csprojResolveAssemblyReference.cache
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\StockManagerDataLibrary.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\StockManagerDataLibrary.pdb
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\HtmlAgilityPack.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\Json.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\Newtonsoft.Json.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\HtmlAgilityPack.xml
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\Json.pdb
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\bin\Debug\Newtonsoft.Json.xml
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\obj\Debug\StockManagerDataLibrary.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerDataLibrary\StockManagerDataLibrary\obj\Debug\StockManagerDataLibrary.pdb

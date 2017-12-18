@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Portfolios";
+}
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+            </hgroup>
+        </div>
+    </section>
+}
+
+<table>
+    <tr><th>Portfolio Name</th></tr>
+    @foreach(string name in ViewBag.portfolioList)
+    {
+        <tr>
+            <td style="border:solid thin"><a href="../Home/PortfolioDetails?name=@name">@name</a></td>
+        </tr>
+    }
+</table>
+
+<form method="post" action="../Home/PortfolioDetails" runat="server">
+    <input type="text" name="PortfolioName" title="Name"/>
+    <input type="submit" name="Portfolio" value="Add new portfolio">
+</form>

@@ -1,0 +1,5 @@
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\obj\Debug\StockManagerService.csprojResolveAssemblyReference.cache
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\bin\StockManagerService.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\bin\StockManagerService.pdb
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\obj\Debug\StockManagerService.dll
+C:\Users\TOSHIBA\Documents\Visual Studio 2012\Projects\StockManagerService\StockManagerService\obj\Debug\StockManagerService.pdb

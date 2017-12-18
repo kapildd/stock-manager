@@ -1,0 +1,428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StockManagerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="StockManagerModelStoreContainer">
+    <EntitySet Name="Alerts" EntityType="StockManagerModel.Store.Alerts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Company" EntityType="StockManagerModel.Store.Company" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="LoginInfo" EntityType="StockManagerModel.Store.LoginInfo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Portfolio" EntityType="StockManagerModel.Store.Portfolio" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PortfolioData" EntityType="StockManagerModel.Store.PortfolioData" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PriceAlerts" EntityType="StockManagerModel.Store.PriceAlerts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ScripMapper" EntityType="StockManagerModel.Store.ScripMapper" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SourceInfo" EntityType="StockManagerModel.Store.SourceInfo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StockData" EntityType="StockManagerModel.Store.StockData" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="sysdiagrams" EntityType="StockManagerModel.Store.sysdiagrams" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TimeAlerts" EntityType="StockManagerModel.Store.TimeAlerts" store:Type="Tables" store:Schema="dbo" store:Name="TimeAlerts">
+      <DefiningQuery>SELECT 
+      [TimeAlerts].[alertID] AS [alertID], 
+      [TimeAlerts].[time] AS [time]
+      FROM [dbo].[TimeAlerts] AS [TimeAlerts]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="Transaction" EntityType="StockManagerModel.Store.Transaction" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserInfo" EntityType="StockManagerModel.Store.UserInfo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Watchlist" EntityType="StockManagerModel.Store.Watchlist" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="WatchlistData" EntityType="StockManagerModel.Store.WatchlistData" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Alerts_Company" Association="StockManagerModel.Store.FK_Alerts_Company">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="Alerts" EntitySet="Alerts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Alerts_PriceAlerts" Association="StockManagerModel.Store.FK_Alerts_PriceAlerts">
+      <End Role="Alerts" EntitySet="Alerts" />
+      <End Role="PriceAlerts" EntitySet="PriceAlerts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Alerts_TimeAlerts" Association="StockManagerModel.Store.FK_Alerts_TimeAlerts">
+      <End Role="Alerts" EntitySet="Alerts" />
+      <End Role="TimeAlerts" EntitySet="TimeAlerts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Alerts_User" Association="StockManagerModel.Store.FK_Alerts_User">
+      <End Role="UserInfo" EntitySet="UserInfo" />
+      <End Role="Alerts" EntitySet="Alerts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Company_PortfolioData" Association="StockManagerModel.Store.FK_Company_PortfolioData">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="PortfolioData" EntitySet="PortfolioData" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LoginInfo_UserInfo" Association="StockManagerModel.Store.FK_LoginInfo_UserInfo">
+      <End Role="UserInfo" EntitySet="UserInfo" />
+      <End Role="LoginInfo" EntitySet="LoginInfo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Portfolio_PortfolioData" Association="StockManagerModel.Store.FK_Portfolio_PortfolioData">
+      <End Role="Portfolio" EntitySet="Portfolio" />
+      <End Role="PortfolioData" EntitySet="PortfolioData" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ScripMapper_Company" Association="StockManagerModel.Store.FK_ScripMapper_Company">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="ScripMapper" EntitySet="ScripMapper" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ScripMapper_SourceInfo" Association="StockManagerModel.Store.FK_ScripMapper_SourceInfo">
+      <End Role="SourceInfo" EntitySet="SourceInfo" />
+      <End Role="ScripMapper" EntitySet="ScripMapper" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StockData_Company" Association="StockManagerModel.Store.FK_StockData_Company">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="StockData" EntitySet="StockData" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_Company" Association="StockManagerModel.Store.FK_Transaction_Company">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_Portfolio" Association="StockManagerModel.Store.FK_Transaction_Portfolio">
+      <End Role="Portfolio" EntitySet="Portfolio" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Portfolio" Association="StockManagerModel.Store.FK_User_Portfolio">
+      <End Role="UserInfo" EntitySet="UserInfo" />
+      <End Role="Portfolio" EntitySet="Portfolio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Watchlist_UserInfo" Association="StockManagerModel.Store.FK_Watchlist_UserInfo">
+      <End Role="UserInfo" EntitySet="UserInfo" />
+      <End Role="Watchlist" EntitySet="Watchlist" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WatchlistData_Company" Association="StockManagerModel.Store.FK_WatchlistData_Company">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="WatchlistData" EntitySet="WatchlistData" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WatchlistData_Watchlist" Association="StockManagerModel.Store.FK_WatchlistData_Watchlist">
+      <End Role="Watchlist" EntitySet="Watchlist" />
+      <End Role="WatchlistData" EntitySet="WatchlistData" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Alerts">
+    <Key>
+      <PropertyRef Name="alertID" />
+    </Key>
+    <Property Name="alertID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="UID" Type="int" Nullable="false" />
+    <Property Name="CID" Type="int" Nullable="false" />
+    <Property Name="type" Type="nvarchar" Nullable="false" MaxLength="10" />
+    <Property Name="pending" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Company">
+    <Key>
+      <PropertyRef Name="CID" />
+    </Key>
+    <Property Name="CID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="nvarchar(max)" />
+    <Property Name="Scrip" Type="nvarchar" MaxLength="50" />
+    <Property Name="ExchangeName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sector" Type="nvarchar" MaxLength="50" />
+    <Property Name="URL" Type="nvarchar" MaxLength="2048" />
+  </EntityType>
+  <EntityType Name="LoginInfo">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Portfolio">
+    <Key>
+      <PropertyRef Name="PID" />
+    </Key>
+    <Property Name="PID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="nvarchar(max)" />
+    <Property Name="UID" Type="int" />
+  </EntityType>
+  <EntityType Name="PortfolioData">
+    <Key>
+      <PropertyRef Name="PID" />
+      <PropertyRef Name="CID" />
+    </Key>
+    <Property Name="PID" Type="int" Nullable="false" />
+    <Property Name="CID" Type="int" Nullable="false" />
+    <Property Name="Cost" Type="decimal" Scale="2" />
+    <Property Name="CurrentHolding" Type="int" />
+    <Property Name="RealizedProfitLoss" Type="decimal" Scale="2" />
+    <Property Name="UnrealizedProfitLoss" Type="decimal" Scale="2" />
+  </EntityType>
+  <EntityType Name="PriceAlerts">
+    <Key>
+      <PropertyRef Name="alertID" />
+    </Key>
+    <Property Name="alertID" Type="int" Nullable="false" />
+    <Property Name="price" Type="decimal" Nullable="false" Scale="2" />
+    <Property Name="tolerance" Type="decimal" Precision="3" Scale="3" />
+  </EntityType>
+  <EntityType Name="ScripMapper">
+    <Key>
+      <PropertyRef Name="CID" />
+      <PropertyRef Name="SourceID" />
+    </Key>
+    <Property Name="CID" Type="int" Nullable="false" />
+    <Property Name="SourceID" Type="int" Nullable="false" />
+    <Property Name="ScripCode" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SourceInfo">
+    <Key>
+      <PropertyRef Name="SourceID" />
+    </Key>
+    <Property Name="SourceID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SourceName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Link" Type="nvarchar" Nullable="false" MaxLength="2048" />
+  </EntityType>
+  <EntityType Name="StockData">
+    <Key>
+      <PropertyRef Name="CID" />
+    </Key>
+    <Property Name="CID" Type="int" Nullable="false" />
+    <Property Name="LTP" Type="decimal" Scale="2" />
+    <Property Name="LTPTime" Type="nvarchar" MaxLength="50" />
+    <Property Name="Change" Type="decimal" Scale="2" />
+    <Property Name="PercChange" Type="decimal" Scale="2" />
+    <Property Name="DayOpen" Type="decimal" Scale="2" />
+    <Property Name="PrevClose" Type="decimal" Scale="2" />
+    <Property Name="DayHigh" Type="decimal" Scale="2" />
+    <Property Name="DayLow" Type="decimal" Scale="2" />
+    <Property Name="Week52High" Type="decimal" Scale="2" />
+    <Property Name="Week52Low" Type="decimal" Scale="2" />
+    <Property Name="Volume" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="128" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'StockManager.dbo.TimeAlerts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="TimeAlerts">
+    <Key>
+      <PropertyRef Name="alertID" />
+      <PropertyRef Name="time" />
+    </Key>
+    <Property Name="alertID" Type="int" Nullable="false" />
+    <Property Name="time" Type="time" Nullable="false" Precision="0" />
+  </EntityType>
+  <EntityType Name="Transaction">
+    <Key>
+      <PropertyRef Name="TransID" />
+    </Key>
+    <Property Name="TransID" Type="int" Nullable="false" />
+    <Property Name="Type" Type="nvarchar" MaxLength="50" />
+    <Property Name="NoOfShares" Type="int" />
+    <Property Name="PricePerShare" Type="money" />
+    <Property Name="PID" Type="int" />
+    <Property Name="CID" Type="int" />
+    <Property Name="DateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UserInfo">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Watchlist">
+    <Key>
+      <PropertyRef Name="WatchlistId" />
+    </Key>
+    <Property Name="WatchlistId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="WLName" Type="nvarchar(max)" />
+    <Property Name="UID" Type="int" />
+  </EntityType>
+  <EntityType Name="WatchlistData">
+    <Key>
+      <PropertyRef Name="WatchlistID" />
+      <PropertyRef Name="CID" />
+    </Key>
+    <Property Name="WatchlistID" Type="int" Nullable="false" />
+    <Property Name="CID" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Alerts_Company">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="1" />
+    <End Role="Alerts" Type="StockManagerModel.Store.Alerts" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="Alerts">
+        <PropertyRef Name="alertID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Alerts_PriceAlerts">
+    <End Role="Alerts" Type="StockManagerModel.Store.Alerts" Multiplicity="1" />
+    <End Role="PriceAlerts" Type="StockManagerModel.Store.PriceAlerts" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Alerts">
+        <PropertyRef Name="alertID" />
+      </Principal>
+      <Dependent Role="PriceAlerts">
+        <PropertyRef Name="alertID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Alerts_TimeAlerts">
+    <End Role="Alerts" Type="StockManagerModel.Store.Alerts" Multiplicity="1" />
+    <End Role="TimeAlerts" Type="StockManagerModel.Store.TimeAlerts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Alerts">
+        <PropertyRef Name="alertID" />
+      </Principal>
+      <Dependent Role="TimeAlerts">
+        <PropertyRef Name="alertID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Alerts_User">
+    <End Role="UserInfo" Type="StockManagerModel.Store.UserInfo" Multiplicity="1" />
+    <End Role="Alerts" Type="StockManagerModel.Store.Alerts" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserInfo">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Alerts">
+        <PropertyRef Name="alertID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Company_PortfolioData">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="1" />
+    <End Role="PortfolioData" Type="StockManagerModel.Store.PortfolioData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="PortfolioData">
+        <PropertyRef Name="CID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LoginInfo_UserInfo">
+    <End Role="UserInfo" Type="StockManagerModel.Store.UserInfo" Multiplicity="1" />
+    <End Role="LoginInfo" Type="StockManagerModel.Store.LoginInfo" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserInfo">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="LoginInfo">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Portfolio_PortfolioData">
+    <End Role="Portfolio" Type="StockManagerModel.Store.Portfolio" Multiplicity="1" />
+    <End Role="PortfolioData" Type="StockManagerModel.Store.PortfolioData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Portfolio">
+        <PropertyRef Name="PID" />
+      </Principal>
+      <Dependent Role="PortfolioData">
+        <PropertyRef Name="PID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ScripMapper_Company">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="1" />
+    <End Role="ScripMapper" Type="StockManagerModel.Store.ScripMapper" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="ScripMapper">
+        <PropertyRef Name="CID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ScripMapper_SourceInfo">
+    <End Role="SourceInfo" Type="StockManagerModel.Store.SourceInfo" Multiplicity="1" />
+    <End Role="ScripMapper" Type="StockManagerModel.Store.ScripMapper" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SourceInfo">
+        <PropertyRef Name="SourceID" />
+      </Principal>
+      <Dependent Role="ScripMapper">
+        <PropertyRef Name="SourceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StockData_Company">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="1" />
+    <End Role="StockData" Type="StockManagerModel.Store.StockData" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="StockData">
+        <PropertyRef Name="CID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_Company">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="0..1" />
+    <End Role="Transaction" Type="StockManagerModel.Store.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="CID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_Portfolio">
+    <End Role="Portfolio" Type="StockManagerModel.Store.Portfolio" Multiplicity="0..1" />
+    <End Role="Transaction" Type="StockManagerModel.Store.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Portfolio">
+        <PropertyRef Name="PID" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="PID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Portfolio">
+    <End Role="UserInfo" Type="StockManagerModel.Store.UserInfo" Multiplicity="0..1" />
+    <End Role="Portfolio" Type="StockManagerModel.Store.Portfolio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserInfo">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Portfolio">
+        <PropertyRef Name="UID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Watchlist_UserInfo">
+    <End Role="UserInfo" Type="StockManagerModel.Store.UserInfo" Multiplicity="0..1" />
+    <End Role="Watchlist" Type="StockManagerModel.Store.Watchlist" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserInfo">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Watchlist">
+        <PropertyRef Name="UID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WatchlistData_Company">
+    <End Role="Company" Type="StockManagerModel.Store.Company" Multiplicity="1" />
+    <End Role="WatchlistData" Type="StockManagerModel.Store.WatchlistData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="CID" />
+      </Principal>
+      <Dependent Role="WatchlistData">
+        <PropertyRef Name="CID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WatchlistData_Watchlist">
+    <End Role="Watchlist" Type="StockManagerModel.Store.Watchlist" Multiplicity="1" />
+    <End Role="WatchlistData" Type="StockManagerModel.Store.WatchlistData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Watchlist">
+        <PropertyRef Name="WatchlistId" />
+      </Principal>
+      <Dependent Role="WatchlistData">
+        <PropertyRef Name="WatchlistID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
